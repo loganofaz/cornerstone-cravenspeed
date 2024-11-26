@@ -52,9 +52,12 @@ export default class CsGallery {
     } else {
       this.init();
     }
+
+    this.observeSlides();
   }
 
   init() {
+    console.log('init csGallery');
     this.clickHandler = this.handleClick.bind(this);
     this.container.addEventListener('click', this.clickHandler);
 
@@ -69,6 +72,28 @@ export default class CsGallery {
 
     // ensure that the map is visible if the previous gallery only had one image
     this.container.querySelector('.gallery-nav').style.display = 'flex';
+  }
+
+  observeSlides() {
+    const config = {childList: true};
+
+    this.mutationCallback = (mutationsList) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+          this.reinitializeGallery();
+          break;
+        }
+      }
+    }
+
+    this.observer = new MutationObserver(this.mutationCallback);
+    this.observer.observe(this.imageContainer, config);
+  }
+
+  reinitializeGallery() {
+    this.destroy();
+    this.slides = this.imageContainer.querySelectorAll('.slide');
+    this.init();
   }
 
   handleClick(event) {
@@ -128,6 +153,7 @@ export default class CsGallery {
     }
 
     if (this.type === 'collection') {
+      console.log('add bar');
       const bar = document.createElement('div');
       const indicator = document.createElement('div');
       bar.classList.add('gallery-map-bar');
@@ -241,5 +267,10 @@ export default class CsGallery {
     this.container = null;
     this.mapElement = null;
 
+    // Disconnect observer when destroying instance
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
   }
 }

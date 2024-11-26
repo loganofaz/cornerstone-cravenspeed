@@ -1,6 +1,6 @@
 import PageManager from '../page-manager';
 import inStockNotifyForm from './product/inStockNotify';
-import CsGallery from './product/csGallery';
+import CsGallery from './common/csGallery';
 
 export default class Product extends PageManager {
   constructor(context) {

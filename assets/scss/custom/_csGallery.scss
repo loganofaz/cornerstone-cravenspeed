@@ -1,26 +1,27 @@
+@import "custom-mixins";
+
 /* Apply styles to size your gallery container */
 .product-image-gallery {
-    position: relative;
-    width: 100%;
-    margin: 0 auto;
-}
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
 
-.slides-wrapper {
+  .slides-wrapper {
     width: 100%;
     margin: 0 auto;
     box-sizing: content-box;
     overflow: hidden;
     position: relative;
-}
+  }
 
-.slides {
+  .slides {
     /* set the aspect ratio of the visible slides */
     aspect-ratio: 4 / 3;
     display: flex;
-    transition: transform .3s;
-}
+    transition: transform 0.3s;
+  }
 
-.slide {
+  .slide {
     width: 100%;
     height: 100%;
     flex: 1 0 100%;
@@ -29,16 +30,15 @@
     justify-content: center;
     align-items: center;
     padding: 0 1px;
-}
+  }
 
-.slide img {
+  .slide img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-}
+  }
 
-
-.gallery-nav {
+  .gallery-nav {
     display: flex;
     justify-content: space-between;
     position: absolute;
@@ -46,13 +46,13 @@
     top: 0;
     bottom: 0;
     pointer-events: none;
-}
+  }
 
-.gallery-nav > button {
+  .gallery-nav > button {
     pointer-events: auto;
-}
+  }
 
-.gallery-map {
+  .gallery-map {
     position: absolute;
     bottom: 1rem;
     width: 100%;
@@ -60,30 +60,30 @@
     gap: 8px;
     justify-content: center;
     pointer-events: none;
-}
+  }
 
-.gallery-map > svg.active > circle {
+  .gallery-map > svg.active > circle {
     /* set the color of the active dot */
-    fill: stencilColor("color-primary");
-}
+    fill: stencilColor('color-primary');
+  }
 
-.gallery-map-bar {
+  .gallery-map-bar {
     height: 10px;
     width: 30%;
     background-color: rgba(0, 0, 0, 0.598);
     border-radius: 5px;
-}
+  }
 
-.gallery-map-indicator {
+  .gallery-map-indicator {
     position: relative;
     height: 10px;
     border-radius: 5px;
     /* set the color of the indicator in bar mode */
-    background-color: stencilColor("color-primary");
-    transition: transform .5s;
-}
+    background-color: stencilColor('color-primary');
+    transition: transform 0.5s;
+  }
 
-.gallery-modal {
+  .gallery-modal {
     width: 100vw;
     height: 100vh;
     max-width: 100%;
@@ -94,32 +94,32 @@
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.8);
-}
+  }
 
-.modal-content-wrapper {
+  .modal-content-wrapper {
     display: flex;
     max-width: 100%;
-}
+  }
 
-.modal-content {
+  .modal-content {
     max-width: 100%;
     max-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-}
+  }
 
-.modal-content img {
+  .modal-content img {
     width: auto;
     height: auto;
     max-width: 100vw;
     max-height: 100vh;
     object-fit: contain;
     display: block;
-}
+  }
 
-.modal-close {
+  .modal-close {
     position: absolute;
     top: 20px;
     right: 20px;
@@ -128,9 +128,9 @@
     padding: 10px;
     cursor: pointer;
     z-index: 10;
-}
+  }
 
-/* show any number of slides, just include the appropriate visible-slides class
+  /* show any number of slides, just include the appropriate visible-slides class
 
 .visible-slides-X {
     width: calc(100% / X);
@@ -139,43 +139,264 @@
 
 */
 
-.visible-slides-2 {
+  .visible-slides-2 {
     width: calc(100% / 2);
     flex: 1 0 calc(100% / 2);
-}
+  }
 
-.visible-slides-3 {
+  .visible-slides-3 {
     width: calc(100% / 3);
     flex: 1 0 calc(100% / 3);
-}
+  }
 
-.visible-slides-4 {
+  .visible-slides-4 {
     width: calc(100% / 4);
     flex: 1 0 calc(100% / 4);
-}
+  }
 
-/* overrides for collection mode */
+  /* overrides for collection mode */
 
-.collection > .gallery {
+  .collection > .gallery {
     margin-bottom: calc(1rem + 8px);
     aspect-ratio: auto;
-}
+  }
 
-.collection .slide {
+  .collection .slide {
     flex-direction: column;
     justify-content: space-between;
     height: auto;
-    padding: .5rem;
-}
+    padding: 0.5rem;
+  }
 
-.collection .slide img {
+  .collection .slide img {
     width: 100%;
     max-height: 100%;
     object-fit: contain;
     flex-grow: 1;
     height: auto;
+  }
+
+  .slide-details > * {
+    margin: 0;
+  }
 }
 
-.slide-details > * {
+.cs-product-collection {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template: auto auto / auto auto auto;
+  align-items: center;
+
+  .slides-wrapper {
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: content-box;
+    overflow: hidden;
+    position: relative;
+  }
+
+  button {
+    padding: 0;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:focus {
+      outline-offset: -2px !important;
+    }
+  }
+
+  .gallery-arrow {
+    @include square($slick-arrows-size);
+  }
+
+  .slides {
+    /* set the aspect ratio of the visible slides */
+    // aspect-ratio: 9 / 3;
+    display: flex;
+    transition: transform 0.3s;
+  }
+
+  .slide {
+    width: 100%;
+    height: 100%;
+    flex: 1 0 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1px;
+    
+    &:focus {
+      outline-offset: -2px !important;
+    }
+
+    &:hover h3 {
+      color: stencilColor("color-primary");
+    }
+  }
+
+  .slide img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .gallery-nav {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    pointer-events: none;
+    margin-top: spacing("half");
+  }
+
+  .gallery-nav > button {
+    pointer-events: auto;
+  }
+
+  .gallery-map {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .gallery-map > svg.active > circle {
+    /* set the color of the active dot */
+    fill: stencilColor('color-primary');
+  }
+
+  .gallery-map-bar {
+    height: 10px;
+    width: 40%;
+    background-color: rgba(0, 0, 0, 0.598);
+    border-radius: 5px;
+  }
+
+  .gallery-map-indicator {
+    position: relative;
+    height: 10px;
+    border-radius: 5px;
+    /* set the color of the indicator in bar mode */
+    background-color: stencilColor('color-primary');
+    transition: transform 0.5s;
+  }
+
+  .gallery-modal {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 0;
     margin: 0;
+    border: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  .modal-content-wrapper {
+    display: flex;
+    max-width: 100%;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .modal-content img {
+    width: auto;
+    height: auto;
+    max-width: 100vw;
+    max-height: 100vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  /* show any number of slides, just include the appropriate visible-slides class
+    
+    .visible-slides-X {
+        width: calc(100% / X);
+        flex: 1 0 calc(100% / X);
+    }
+    
+    */
+
+  .visible-slides-2 {
+    width: calc(100% / 2);
+    flex: 1 0 calc(100% / 2);
+  }
+
+  .visible-slides-3 {
+    width: calc(100% / 3);
+    flex: 1 0 calc(100% / 3);
+  }
+
+  .visible-slides-4 {
+    width: calc(100% / 4);
+    flex: 1 0 calc(100% / 4);
+  }
+
+  /* overrides for collection mode */
+
+  &.collection {
+    > .slides {
+      margin-bottom: calc(1rem + 8px);
+      aspect-ratio: auto;
+    }
+  
+    .slide {
+      flex-direction: column;
+      align-items: center;
+      height: auto;
+      padding: 0.5rem;
+      text-decoration: none;
+    }
+  
+    .slide:hover {
+      color: stencilColor("color-primary");
+    }
+  
+    .slide img {
+      width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      flex-grow: 1;
+      height: auto;
+    }
+  
+    .slide h3 {
+      margin: 0;
+      text-align: center;
+    }
+
+    .slide div {
+      font-size: 1.5rem;
+    }
+
+    .slide-details > * {
+      margin: 0;
+    }
+  }
+  
 }
