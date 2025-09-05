@@ -663,7 +663,7 @@ export default class Product extends PageManager {
         this.opt1Index = '';
         this.loadOpt1();
       } else {
-        this.createOptions(gen_data[this.model], 'gen', null);
+        this.createOptions(this.correctGens(gen_data[this.model]), 'gen', null);
         this.highlightActiveStep(2);
       }
     } else {
@@ -1161,5 +1161,9 @@ export default class Product extends PageManager {
     this.blemAcknowledged = false;
     blemCheckbox.setAttribute('data-reveal-id', 'scratch-and-dent');
     blemCheckbox.checked = false;
+  }
+
+  correctGens(gens) {
+    return gens.filter((gen) => gen.index.includes(this.make))
   }
 }
