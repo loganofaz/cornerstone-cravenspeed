@@ -54,7 +54,7 @@
   <div id="product-below">
     
     {{>components/products-cs/description-tabs-cs}}
-    
+
   </div>
   
 </div>
@@ -67,12 +67,12 @@
 
 {{#contains (JSONstringify product.custom_fields) 'archetype_id'}}
 
-<script type="text/javascript" src="/content/{{dashcase (lookup (split product.url '.com') 1)}}.js"></script>
+<script type="text/javascript" src="{{theme_settings.cs_cdn}}/{{dashcase (lookup (split product.url '.com') 1)}}.js"></script>
 
 {{else}}
 
 {{#filter product.custom_fields 'archetype_url' property='name' }}
-<script type="text/javascript" src="/content/{{chop value}}.js"></script>
+<script type="text/javascript" src="{{theme_settings.cs_cdn}}/{{chop value}}.js"></script>
 {{/filter}}
 
 <script>

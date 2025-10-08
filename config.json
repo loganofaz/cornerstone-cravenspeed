@@ -880,7 +880,7 @@
         ]
       },
       "settings": {
-        
+        "cs_cdn": "https://cravenspeed-cdn.sfo3.cdn.digitaloceanspaces.com",
         "use_svg_logo": true,
         "show_home_in_nav": true,
         "show_category_nav_footer": false,
