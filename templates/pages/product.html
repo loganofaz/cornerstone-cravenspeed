@@ -67,7 +67,7 @@
 
 {{#contains (JSONstringify product.custom_fields) 'archetype_id'}}
 
-<script type="text/javascript" src="https://cravenspeed-cdn.sfo3.cdn.digitaloceanspaces.com{{dashcase product.path}}.js"></script>
+<script type="text/javascript" src="https://cravenspeed-cdn.sfo3.cdn.digitaloceanspaces.com/{{dashcase (lookup (split product.url '.com') 1)}}.js"></script>
 
 {{else}}
 
