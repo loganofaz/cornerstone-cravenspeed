@@ -11,7 +11,7 @@
     <div id="product-above-photo">{{> components/products-cs/gallery}}</div>
     <div id="product-above-info">
       <div id="product-title">
-        <h1>
+        <h1 data-product-title="{{product.title}}">
           {{#contains (JSONstringify product.custom_fields) 'archetype_id'}}
           {{product.title}}
           {{else}}
@@ -21,7 +21,7 @@
           {{/contains}}
         </h1>
       </div>
-      <h2 class="single-row" id="product-sku">{{product.sku}}</h2>
+      <h2 class="single-row" id="product-sku" data-product-sku="{{product.sku}}">{{product.sku}}</h2>
       <h2 class="single-row" id="product-shipping"></h2>
       <h2 class="single-row" id="product-stock"></h2>
       <h2 class="double-row" id="product-price"></h2>
@@ -61,32 +61,12 @@
 {{> components/products/schema}}
 
 <script>
-  let aliasVehicle ='';
   CSoptimized = true;
 </script>
 
-{{#contains (JSONstringify product.custom_fields) 'archetype_id'}}
-
-<script type="text/javascript" src="https://cravenspeed-cdn.sfo3.cdn.digitaloceanspaces.com/{{dashcase (lookup (split product.url '.com') 1)}}.js"></script>
-
-{{else}}
-
-{{#filter product.custom_fields 'archetype_url' property='name' }}
-<script type="text/javascript" src="https://cravenspeed-cdn.sfo3.cdn.digitaloceanspaces.com/{{chop value}}.js"></script>
-{{/filter}}
-
-<script>
-  aliasVehicle = {
-    make: '{{#filter product.custom_fields "Make" property="name"}}{{value}}{{/filter}}',
-    model: '{{#filter product.custom_fields "Model" property="name"}}{{value}}{{/filter}}',
-    gen: '{{#filter product.custom_fields "Make" property="name"}}{{value}}{{/filter}}{{#filter product.custom_fields "Model" property="name"}}{{value}}{{/filter}}{{#filter product.custom_fields "Generation" property="name"}}{{value}}{{/filter}}',
-    sku: '{{product.sku}}'
-  }
-
-  CSoptimized = true;
-</script>
-
-{{/contains}}
+{{#with (split product.title ' for') as |parts|}}
+  <script type="text/javascript" src="https://cravenspeed-cdn.sfo3.cdn.digitaloceanspaces.com/{{dashcase (lowercase parts.[0])}}.js"></script>
+{{/with}}
 
 {{/partial}}
 

@@ -34,11 +34,9 @@
                     {{/if}}
                     <h2 class="cart-item-name">
                         <a class="cart-item-name__label" href="
-                            {{#filter this.custom_fields 'archetype_url' property='name'}}
-                                {{value}}
-                            {{else}}
-                                {{../this.url }}
-                            {{/filter}}
+                        {{#with (split this.name ' for') as |parts|}}
+                            {{dashcase (lowercase parts.[0])}}
+                        {{/with}}
                         ">{{name}}</a>
                     </h2>
                     {{#if release_date}}

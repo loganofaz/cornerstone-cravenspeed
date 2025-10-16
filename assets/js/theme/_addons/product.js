@@ -8,6 +8,7 @@ export default class Product extends PageManager {
     this.make;
     this.model;
     this.gen;
+    this.aliasVehicle = null;
     this.opt1Index;
     this.endPointIndex;
     this.endPointData;
@@ -83,6 +84,7 @@ export default class Product extends PageManager {
 
     // content elements
     this.contentElements = {
+      title: document.querySelector('h1'),
       productMessages: document.querySelector('#product-messages'),
       gallerySlides: document.querySelector('.slides'),
       sku: document.querySelector('#product-sku'),
@@ -101,6 +103,11 @@ export default class Product extends PageManager {
   }
 
   onReady() {
+
+    if(!this.checkPageIsArchetype()){
+      const title = this.contentElements.title.dataset.productTitle;
+      this.aliasVehicle = this.parseVehicleString(title);
+    }
 
     this.gallery = new CsGallery({
         containerClass: 'cs-gallery-wrapper',
@@ -137,6 +144,28 @@ export default class Product extends PageManager {
     this.rating.addEventListener('click', this.ratingHandler);
     this.blemAcceptButton.addEventListener('click', this.blemAcceptHandler);
     this.blemDeclineLink.addEventListener('click', this.blemDeclineHandler);
+  }
+
+  checkPageIsArchetype() {
+    const expression = /\d/;
+    return !expression.test(this.contentElements.title.dataset.productTitle);
+  }
+
+  // get vehicle and sku out of a BigC product title on alias pages
+  parseVehicleString(title) {
+    const vehicleString = title.replace(og_name + ' for ','').trim();
+    const make = make_data.find(make => vehicleString.startsWith(make));
+    const modelGenString = vehicleString.replace(make, '').trim();
+    const model = model_data[make].find(model => modelGenString.startsWith(model));
+    const modelGens = gen_data[model];
+    const genString = modelGenString.replace(model,'').replace(' to ', '-').trim();
+    const genMatches = modelGens.filter(gen => genString.startsWith(gen.name));
+    const bestMatch = genMatches.reduce((longest, current) => {
+      return current.name.length > longest.name.length ? current : longest;
+    }, {name: ''});
+    const gen = bestMatch.index;
+    const sku = this.contentElements.sku.dataset.productSku;
+    return { make, model, gen, sku};
   }
 
   // handle messages
@@ -345,12 +374,12 @@ export default class Product extends PageManager {
     } else {
       if (this.checkCookieVehicle()) {
       } else {
-        if (aliasVehicle) {
+        if (this.aliasVehicle) {
           this.aliasProduct = true;
-          this.make = aliasVehicle.make;
-          this.model = aliasVehicle.model;
-          this.gen = aliasVehicle.gen;
-          this.aliasSku = aliasVehicle.sku;
+          this.make = this.aliasVehicle.make;
+          this.model = this.aliasVehicle.model;
+          this.gen = this.aliasVehicle.gen;
+          this.aliasSku = this.aliasVehicle.sku;
           this.getAliasOptions();
         } else {
         }
@@ -600,7 +629,7 @@ export default class Product extends PageManager {
     this.clearBlem();
     this.cartButton(false);
     this.selectChange = true;
-    aliasVehicle = null;
+    this.aliasVehicle = null;
     if (this.selectionSteps.make.default !== selected) {
       this.make = selected;
       setCookie('make', this.make);
@@ -645,7 +674,7 @@ export default class Product extends PageManager {
     this.clearBlem();
     this.cartButton(false);
     this.selectChange = true;
-    aliasVehicle = null;
+    this.aliasVehicle = null;
     this.clearOptions('model');
     if (selected !== this.selectionSteps['model'].default) {
       this.model = selected;
@@ -676,7 +705,7 @@ export default class Product extends PageManager {
     this.clearBlem();
     this.cartButton(false);
     this.selectChange = true;
-    aliasVehicle = null;
+    this.aliasVehicle = null;
     this.clearOptions('gen');
     if (selected !== this.selectionSteps['gen'].default) {
       this.gen = selected;
@@ -694,7 +723,7 @@ export default class Product extends PageManager {
     this.clearBlem();
     this.cartButton(false);
     this.selectChange = true;
-    aliasVehicle = null;
+    this.aliasVehicle = null;
     this.clearOptions('opt1');
     if (selected !== this.selectionSteps['opt1'].default) {
       this.opt1Index = selected;
@@ -714,7 +743,7 @@ export default class Product extends PageManager {
     this.clearBlem();
     this.cartButton(false);
     this.selectChange = true;
-    aliasVehicle = null;
+    this.aliasVehicle = null;
     if (selected !== this.selectionSteps.opt2.default) {
       this.endPointIndex = selected;
       this.clearOptions('opt2');
@@ -743,10 +772,10 @@ export default class Product extends PageManager {
       this.selectionSteps['opt2'].element.style.visibility = 'hidden';
     }
   }
-
+  //the item isn't matching the gen value: item: BMW1 SeriesE81, E82, E87, E88112 ***note the extra 112!!!
   getAliasOptions() {
     for (const item in key_dict) {
-      if (key_dict[item].alias_sku === aliasVehicle.sku) {
+      if (key_dict[item].alias_sku === this.aliasVehicle.sku) {
         this.endPointIndex = item;
         let optionData = option_data[this.gen];
         for (const option of optionData) {
