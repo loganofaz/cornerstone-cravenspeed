@@ -153,28 +153,36 @@ export default class Product extends PageManager {
 
   // get vehicle and sku out of a BigC product title on alias pages
   parseVehicleString(title) {
-    const findLongestPrefixMatch = (searchString, candidates) => {
-      const matches = candidates.filter(candidate => searchString.startsWith(candidate));
-      return matches.reduce((longest, current) => {
-        return current.length > longest.length ? current : longest;
-      }, "");
-    };
-    const vehicleString = title.replace(og_name + ' for ', '').trim();
-    const make = findLongestPrefixMatch(vehicleString, make_data);
-    const modelGenString = vehicleString.replace(make, '').trim();
-    const model = findLongestPrefixMatch(modelGenString, model_data[make]);
-    const modelGens = gen_data[model];
-    const genString = modelGenString.replace(model, '').replace(' to ', '-').trim();
-    if (modelGens && genString) {
-      const genMatches = modelGens.filter(gen => genString.startsWith(gen.name));
-      if (genMatches.length > 0) {
-        const bestMatch = genMatches.reduce((longest, current) => {
-          return current.name.length > longest.name.length ? current : longest;
-        });
-        gen = bestMatch.index;
+    const findLongestMatch = (searchString, candidates, key) => {
+      if (!searchString || !Array.isArray(candidates) || candidates.length === 0) {
+        return null;
       }
-    }
+
+      const matches = candidates.filter(candidate => {
+        const name = key ? candidate[key] : candidate;
+        return searchString.startsWith(name);
+      });
+
+      if (matches.length === 0) {
+        return null;
+      }
+
+      return matches.reduce((best, current) => {
+        const bestName = key ? best[key] : best;
+        const currentName = key ? current[key] : current;
+        return currentName.length > bestName.length ? current : best;
+      });
+    };
+    console.log(gen_data['Maybach']);
+    const vehicleString = title.replace(og_name + ' for ', '').trim();
+    const make = findLongestMatch(vehicleString, make_data);
+    const modelGenString = vehicleString.replace(make, '').trim();
+    const model = findLongestMatch(modelGenString, model_data[make]);
+    const genString = modelGenString.replace(model, '').replace(' to ', '-').trim();
+    const bestGenMatch = findLongestMatch(genString, gen_data[model], 'name');
+    const gen = bestGenMatch ? bestGenMatch.index : null;
     const sku = this.contentElements.sku.dataset.productSku;
+
     return { make, model, gen, sku };
   }
 
@@ -788,8 +796,6 @@ export default class Product extends PageManager {
       if (key_dict[item].alias_sku === this.aliasVehicle.sku) {
         this.endPointIndex = item;
         let optionData = option_data[this.gen];
-        console.log('option data: ', optionData);
-        console.log('this.gen', this.gen);
         for (const option of optionData) {
           if (option.index !== this.endPointIndex) {
             for (const subOptionSet in sub_option_data) {
