@@ -104,14 +104,14 @@ export default class Product extends PageManager {
 
   onReady() {
 
-    if(!this.checkPageIsArchetype()){
+    if (!this.checkPageIsArchetype()) {
       const title = this.contentElements.title.dataset.productTitle;
       this.aliasVehicle = this.parseVehicleString(title);
     }
 
     this.gallery = new CsGallery({
-        containerClass: 'cs-gallery-wrapper',
-        altCaption: true
+      containerClass: 'cs-gallery-wrapper',
+      altCaption: true
     });
 
     // initialize the product rating
@@ -153,19 +153,29 @@ export default class Product extends PageManager {
 
   // get vehicle and sku out of a BigC product title on alias pages
   parseVehicleString(title) {
-    const vehicleString = title.replace(og_name + ' for ','').trim();
-    const make = make_data.find(make => vehicleString.startsWith(make));
+    const findLongestPrefixMatch = (searchString, candidates) => {
+      const matches = candidates.filter(candidate => searchString.startsWith(candidate));
+      return matches.reduce((longest, current) => {
+        return current.length > longest.length ? current : longest;
+      }, "");
+    };
+    const vehicleString = title.replace(og_name + ' for ', '').trim();
+    const make = findLongestPrefixMatch(vehicleString, make_data);
     const modelGenString = vehicleString.replace(make, '').trim();
-    const model = model_data[make].find(model => modelGenString.startsWith(model));
+    const model = findLongestPrefixMatch(modelGenString, model_data[make]);
     const modelGens = gen_data[model];
-    const genString = modelGenString.replace(model,'').replace(' to ', '-').trim();
-    const genMatches = modelGens.filter(gen => genString.startsWith(gen.name));
-    const bestMatch = genMatches.reduce((longest, current) => {
-      return current.name.length > longest.name.length ? current : longest;
-    }, {name: ''});
-    const gen = bestMatch.index;
+    const genString = modelGenString.replace(model, '').replace(' to ', '-').trim();
+    if (modelGens && genString) {
+      const genMatches = modelGens.filter(gen => genString.startsWith(gen.name));
+      if (genMatches.length > 0) {
+        const bestMatch = genMatches.reduce((longest, current) => {
+          return current.name.length > longest.name.length ? current : longest;
+        });
+        gen = bestMatch.index;
+      }
+    }
     const sku = this.contentElements.sku.dataset.productSku;
-    return { make, model, gen, sku};
+    return { make, model, gen, sku };
   }
 
   // handle messages
@@ -200,7 +210,7 @@ export default class Product extends PageManager {
     const warrantyMessage = document.querySelector("#warranty-message");
 
     // check the endpoint data to determine if the product is made in the US, if so create the badge and add it to the array of badges
-    if(this.endPointData.made_in_usa) {
+    if (this.endPointData.made_in_usa) {
       const usaBadge = document.createElement('div');
       usaBadge.classList.add('made-in-usa-badge');
       usaBadge.innerHTML = '<img src="/product_images/uploaded_images/flag.png"><h4>MADE IN USA</h4>';
@@ -208,7 +218,7 @@ export default class Product extends PageManager {
     }
 
     // check the endpoint data to determine if the product has a lifetime warranty (1st party products), if so create the badge and add it to the array of badges
-    if(this.endPointData.brand_name === "CravenSpeed") {
+    if (this.endPointData.brand_name === "CravenSpeed") {
       const warrantyBadge = document.createElement('div');
       warrantyBadge.classList.add('warranty-badge');
       warrantyBadge.innerHTML = '<p>LIFETIME&nbsp;<br>WARRANTY</p>';
@@ -428,10 +438,10 @@ export default class Product extends PageManager {
           const { price, sale_price } = key_dict[item.index];
           const formattedPrice = price.toLocaleString('en-us', { style: 'currency', currency: 'USD' });
           const formattedSalePrice = sale_price.toLocaleString('en-us', { style: 'currency', currency: 'USD' });
-          
+
           option.text += ` (${sale_price !== 0 ? formattedSalePrice : formattedPrice})`;
         }
-        
+
         if (selected) {
           if (item.index === selected) {
             option.selected = true;
@@ -778,6 +788,8 @@ export default class Product extends PageManager {
       if (key_dict[item].alias_sku === this.aliasVehicle.sku) {
         this.endPointIndex = item;
         let optionData = option_data[this.gen];
+        console.log('option data: ', optionData);
+        console.log('this.gen', this.gen);
         for (const option of optionData) {
           if (option.index !== this.endPointIndex) {
             for (const subOptionSet in sub_option_data) {
@@ -811,7 +823,7 @@ export default class Product extends PageManager {
   updateGallery() {
     // get the images for the selected product
     let imageData = this.endPointData.image_array;
-    
+
     // pull the main image off of the imageData so it can be added to the end of the final array
     let mainImage = {
       url: imageData.url,
@@ -821,16 +833,16 @@ export default class Product extends PageManager {
       url_standard: imageData.url_standard,
       sort_order: imageData.image_count,
     };
-    
+
     // reset the image array
     this.imageArray.length = 0;
-    
+
     // push the secondary images and the main image to the new image array
     this.imageArray.push(...imageData.secondary_images_list, mainImage);
-    
+
     // establish an array to contain the slide elements
     let slides = [];
-    
+
     for (const image of this.imageArray) {
       let slide = document.createElement('div');
       slide.classList.add('slide');
@@ -841,10 +853,10 @@ export default class Product extends PageManager {
       slide.append(imgElement);
       slides.push(slide);
     }
-    
+
     this.contentElements.gallerySlides.append(...slides);
-    
-    this.gallery = new CsGallery ({
+
+    this.gallery = new CsGallery({
       containerClass: "cs-gallery-wrapper",
       altCaption: true
     });
@@ -1170,7 +1182,7 @@ export default class Product extends PageManager {
         });
       this.contentElements.price.classList.remove('sale-price');
       this.addToCartButton.href = this.addUrl;
-      if(this.inventory.av === 0 || this.inventory.a2b === 0) {
+      if (this.inventory.av === 0 || this.inventory.a2b === 0) {
         this.cartButton(false);
       }
     }
