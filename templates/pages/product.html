@@ -10,17 +10,15 @@
   <div id="product-above">
     <div id="product-above-photo">{{> components/products-cs/gallery}}</div>
     <div id="product-above-info">
-      <div id="product-title">
-        <h1 data-product-title="{{product.title}}" data-product-category="{{product.category}}">
-          {{#contains (JSONstringify product.custom_fields) 'archetype_id'}}
-          {{product.title}}
-          {{else}}
-          {{#filter product.custom_fields 'Product Type' property='name'}}
-          {{value}}
-          {{/filter}}
-          {{/contains}}
-        </h1>
-      </div>
+      <h1 id="product-title" data-product-title="{{product.title}}" data-product-category="{{product.category}}">
+        {{#contains (JSONstringify product.custom_fields) 'archetype_id'}}
+        {{product.title}}
+        {{else}}
+        {{#filter product.custom_fields 'Product Type' property='name'}}
+        {{value}}
+        {{/filter}}
+        {{/contains}}
+      </h1>
       <h2 class="single-row" id="product-sku" data-product-sku="{{product.sku}}">{{product.sku}}</h2>
       <h2 class="single-row" id="product-shipping"></h2>
       <h2 class="single-row" id="product-stock"></h2>

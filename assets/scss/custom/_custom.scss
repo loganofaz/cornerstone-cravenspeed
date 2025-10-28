@@ -401,7 +401,7 @@ html {
 //
 // -----------------------------------------------------------------------------
 
-#more-products-header,
+#product-more-header,
 #matching-products-header {
   text-align: center;
   font-weight: bold;
@@ -409,7 +409,7 @@ html {
   margin-bottom: spacing('single');
 }
 
-#more-products,
+#product-more-header,
 #matching-products {
   display: grid;
   grid-template-columns: auto;
@@ -685,7 +685,7 @@ html {
     animation: spin 1s infinite linear;
   }
 
-  #instructions-content {
+  #product-instructions {
     width: 100%;
     height: 95svh;
     margin: 0 spacing('single');
