@@ -51,11 +51,11 @@ cart: true
                     </div>
                 {{/if}}
 
-                {{#if cart.additional_checkout_buttons}}
+                <!-- {{#if cart.additional_checkout_buttons}}
                     <div data-cart-additional-checkout-buttons class="cart-additionalCheckoutButtons cart-content-padding-right">
                         {{> components/cart/additional-checkout-buttons}}
                     </div>
-                {{/if}}
+                {{/if}} -->
             {{else}}
                 <div class="cart-actions cart-content-padding-right">
                     <a class="button" href="{{urls.auth.login}}" title="{{lang 'cart.login_to_checkout'}}">{{lang 'cart.login_to_checkout'}}</a>
