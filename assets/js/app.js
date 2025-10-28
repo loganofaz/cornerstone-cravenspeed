@@ -42,9 +42,7 @@ const pageClasses = {
     giftcertificates_redeem: () => import('./theme/gift-certificate'),
     default: noop,
     page: noop,
-    // product: () => import('./theme/product'),
-    // load the original product js if it's not a default template product
-    ...(!CSoptimized ? { product: () => import('./theme/product') } : {}),
+    product: () => import('./theme/_addons/product'),
     amp_product_options: () => import('./theme/product'),
     search: () => import('./theme/search'),
     rss: noop,
@@ -53,27 +51,6 @@ const pageClasses = {
     wishlist: () => import('./theme/wishlist'),
     wishlists: () => import('./theme/wishlist'),
 };
-
-// // Custom addon classes to allow custom scripting without modifiying default files.
-// const addonClasses = {
-//     product: () => import('./theme/_addons/product')
-// }
-
-let addonClasses = {};
-
-
-if (CSoptimized) {
-    addonClasses = {
-        product: () => import('./theme/_addons/product'),
-        page: () => import('./theme/_addons/page')
-    }
-} else {
-    addonClasses = {
-        page: () => import('./theme/_addons/page')
-    }
-    document.querySelector('#body-container').classList.add('container');
-}
-
 
 const customClasses = {};
 
@@ -101,12 +78,6 @@ window.stencilBootstrap = function stencilBootstrap(pageType, contextJSON = null
                 const pageClassImporter = pageClasses[pageType];
                 if (typeof pageClassImporter === 'function') {
                     importPromises.push(pageClassImporter());
-                }
-
-                // Load addon imports
-                const addonClassImporter = addonClasses[pageType];
-                if (typeof addonClassImporter === 'function') {
-                    importPromises.push(addonClassImporter());
                 }
 
                 // See if there is a page class default for a custom template

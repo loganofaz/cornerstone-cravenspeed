@@ -1,12 +1,12 @@
 export default class CsGallery {
   constructor({
-    containerClass = 'test-container', // css class of the parent element
+    containerClass = 'cs-gallery-wrapper', // css class of the parent element
     modal = true, // true to include a clickable modal
     visibleSlides = 1, // the number of slides that are visible in the gallery at a time
     keyControls = true, // control the gallery with the keyboard
     type = 'image-gallery', // [image-gallery, collection] A gallery of photos, or a collection of products
     map = true, // Include a visual reference to the user's position in the gallery
-    altCaption = false // true to display the alt text as a caption
+    altCaption = true // true to display the alt text as a caption
   } = {}) {
     this.containerClass = containerClass;
     this.modal = modal;

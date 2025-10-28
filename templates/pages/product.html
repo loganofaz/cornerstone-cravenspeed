@@ -60,28 +60,6 @@
 </div>
 {{> components/products/schema}}
 
-<script>
-  CSoptimized = true;
-  const isArchetype = document.querySelector('h1').dataset.productCategory === 'Qty - All Products';
-  const title = document.querySelector('h1').dataset.productTitle;
-
-  const getArchetypeString = (fullTitle) => {
-    const separator = ' for ';
-    const lastIndex = fullTitle.lastIndexOf(separator);
-    return (lastIndex === -1) ? fullTitle : fullTitle.slice(0, lastIndex);
-  };
-
-  const archetypeTitleString = isArchetype ? title : getArchetypeString(title);
-  
-  const cdnRoot = 'https://cravenspeed-cdn.sfo3.cdn.digitaloceanspaces.com/';
-  const archetypeUrlSnippet = archetypeTitleString.toLowerCase().replace(/ /g, '-');
-  const archetypeDataUrl = cdnRoot + archetypeUrlSnippet + '.js';
-
-  const script = document.createElement('script');
-  script.src = archetypeDataUrl;
-  document.body.appendChild(script);
-</script>
-
 {{/partial}}
 
 {{> layout/base}}

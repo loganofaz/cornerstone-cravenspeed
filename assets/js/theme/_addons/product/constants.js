@@ -1,0 +1,1 @@
+export const CDN_ROOT = 'https://cravenspeed-cdn.sfo3.cdn.digitaloceanspaces.com/';
