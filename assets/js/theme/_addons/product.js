@@ -18,7 +18,6 @@ export default class Product extends PageManager {
     this.aliasSku;
     this.inventory;
     this.madeToOrder = false;
-    this.aliasProduct = false;
     this.selectChange = false;
     this.gallery;
     this.galleryInitialized = false;
@@ -104,8 +103,8 @@ export default class Product extends PageManager {
 
   onReady() {
 
-    if (!this.checkPageIsArchetype()) {
-      const title = this.contentElements.title.dataset.productTitle;
+    if (!isArchetype) {
+      // const title = this.contentElements.title.dataset.productTitle;
       this.aliasVehicle = this.parseVehicleString(title);
     }
 
@@ -146,11 +145,6 @@ export default class Product extends PageManager {
     this.blemDeclineLink.addEventListener('click', this.blemDeclineHandler);
   }
 
-  checkPageIsArchetype() {
-    const expression = /\d/;
-    return !expression.test(this.contentElements.title.dataset.productTitle);
-  }
-
   // get vehicle and sku out of a BigC product title on alias pages
   parseVehicleString(title) {
     const findLongestMatch = (searchString, candidates, key) => {
@@ -173,7 +167,6 @@ export default class Product extends PageManager {
         return currentName.length > bestName.length ? current : best;
       });
     };
-    console.log(gen_data['Maybach']);
     const vehicleString = title.replace(og_name + ' for ', '').trim();
     const make = findLongestMatch(vehicleString, make_data);
     const modelGenString = vehicleString.replace(make, '').trim();
@@ -393,7 +386,6 @@ export default class Product extends PageManager {
       if (this.checkCookieVehicle()) {
       } else {
         if (this.aliasVehicle) {
-          this.aliasProduct = true;
           this.make = this.aliasVehicle.make;
           this.model = this.aliasVehicle.model;
           this.gen = this.aliasVehicle.gen;
@@ -553,8 +545,9 @@ export default class Product extends PageManager {
   // loads option one when appropriate
   loadOpt1() {
     let opt1Data = option_data[this.gen];
-    if (!this.aliasProduct) {
+    if (isArchetype) {
       // not an alias product
+      console.log('loadOpt1 Archetype')
       if (opt1Data) {
         if (opt1Data.length === 1 && opt1Data[0].name.trim() === '') {
           this.endPointIndex = opt1Data[0].index;
@@ -615,7 +608,7 @@ export default class Product extends PageManager {
     this.clearOptions('opt1');
     let opt2Data = sub_option_data[this.opt1Index];
     if (opt2Data) {
-      if (!this.aliasProduct) {
+      if (isArchetype) {
         if (opt2Data.length === 1) {
           this.opt2Index = opt2Data[0].index;
           this.createOptions(opt2Data, 'opt2', this.opt2Index);

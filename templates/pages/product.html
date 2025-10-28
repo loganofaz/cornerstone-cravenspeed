@@ -11,7 +11,7 @@
     <div id="product-above-photo">{{> components/products-cs/gallery}}</div>
     <div id="product-above-info">
       <div id="product-title">
-        <h1 data-product-title="{{product.title}}">
+        <h1 data-product-title="{{product.title}}" data-product-category="{{product.category}}">
           {{#contains (JSONstringify product.custom_fields) 'archetype_id'}}
           {{product.title}}
           {{else}}
@@ -43,30 +43,44 @@
         <div id="product-fitment-notes"></div>
         {{> components/products-cs/modals/scratchAndDent}}
         <a id="product-add-button" type="button">{{lang 'products.add_to_cart'}}</a>
-        {{> components/products-cs/modals/stockNotification}} 
+        {{> components/products-cs/modals/stockNotification}}
       </div>
       <div id="product-badges"></div>
       {{> components/products-cs/modals/warrantyMessage}}
       {{> components/products-cs/modals/shippingMessage}}
     </div>
   </div>
-  
+
   <div id="product-below">
-    
+
     {{>components/products-cs/description-tabs-cs}}
 
   </div>
-  
+
 </div>
 {{> components/products/schema}}
 
 <script>
   CSoptimized = true;
-</script>
+  const isArchetype = document.querySelector('h1').dataset.productCategory === 'Qty - All Products';
+  const title = document.querySelector('h1').dataset.productTitle;
 
-{{#with (split product.title ' for') as |parts|}}
-  <script type="text/javascript" src="https://cravenspeed-cdn.sfo3.cdn.digitaloceanspaces.com/{{dashcase (lowercase parts.[0])}}.js"></script>
-{{/with}}
+  const getArchetypeString = (fullTitle) => {
+    const separator = ' for ';
+    const lastIndex = fullTitle.lastIndexOf(separator);
+    return (lastIndex === -1) ? fullTitle : fullTitle.slice(0, lastIndex);
+  };
+
+  const archetypeTitleString = isArchetype ? title : getArchetypeString(title);
+  
+  const cdnRoot = 'https://cravenspeed-cdn.sfo3.cdn.digitaloceanspaces.com/';
+  const archetypeUrlSnippet = archetypeTitleString.toLowerCase().replace(/ /g, '-');
+  const archetypeDataUrl = cdnRoot + archetypeUrlSnippet + '.js';
+
+  const script = document.createElement('script');
+  script.src = archetypeDataUrl;
+  document.body.appendChild(script);
+</script>
 
 {{/partial}}
 

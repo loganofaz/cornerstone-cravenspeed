@@ -43,7 +43,8 @@ const pageClasses = {
     default: noop,
     page: noop,
     // product: () => import('./theme/product'),
-    ...(typeof last_update === 'undefined' ? { product: () => import('./theme/product') } : {}),
+    // load the original product js if it's not a default template product
+    ...(!CSoptimized ? { product: () => import('./theme/product') } : {}),
     amp_product_options: () => import('./theme/product'),
     search: () => import('./theme/search'),
     rss: noop,
@@ -60,18 +61,11 @@ const pageClasses = {
 
 let addonClasses = {};
 
-if (typeof last_update !== 'undefined') {
-    if (CSoptimized) {
-        addonClasses = {
-            product: () => import('./theme/_addons/product'),
-            page: () => import('./theme/_addons/page')
-        }
-    } else {
-        console.log('Old Product Class');
-        addonClasses = {
-            product: () => import('./theme/_addons/product-old'),
-            page: () => import('./theme/_addons/page')
-        }
+
+if (CSoptimized) {
+    addonClasses = {
+        product: () => import('./theme/_addons/product'),
+        page: () => import('./theme/_addons/page')
     }
 } else {
     addonClasses = {
